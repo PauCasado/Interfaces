@@ -5,13 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="css.css"></script>
+    <link rel="stylesheet" href="css.css">
 </head>
 <body>
+    
+    <div class="div">
+        <button class="button" id="dibujar">
+            <img src="imagenes/lapiz.png" alt="dibujar" srcset="">
+        </button>
+        <button class="button" id="borrar">
+            <img src="imagenes/goma-de-borrar.png" alt="borrar" srcset="">
+        </button>
+        <button class="button" id="limpiar">
+            <img src="imagenes/dispositivos.png" alt="limpiar pantalla" srcset="">
+        </button>
+        
+    </div>
     <canvas id="canvas"></canvas>
-    <button id="dibujar"></button>
-    <button id="borrar"></button>
-    <button id="limpiar"></button>
-    <script src="js.js"></script>
+    <form action="../../form-result.php" method="post" enctype="multipart/form-data" target="_blank">
+
+        <p>
+      
+          Sube una imagen:
+      
+          <input type="file" name="imagensubida" accept="image/png, .jpeg, .jpg, image/gif">
+      
+          <input type="submit" value="Enviar datos">
+      
+        </p>
+      
+     </form>
+    <script src="filtros.js"></script>
 </body>
 </html>
