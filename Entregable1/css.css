@@ -1,15 +1,22 @@
 .button{
     width: 30px;
     height: 30px;
-    
-   
 }
-.div{
-    width: auto;
-    height: auto;
+canvas{
+    border: solid 3px indianred;
+    margin:10px;
 }
 img{
     width: 15px;;
     height: 15px;
     border-radius: 0%;
+}
+h3{
+    margin: 10px;
+    font-style: italic;
+    font-size: 20px;
+    text-align: center;
+    text-transform: capitalize;
+    background-color: lightskyblue;
+    
 }

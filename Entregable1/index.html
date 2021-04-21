@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="css.css">
 </head>
 <body>
-    
+    <h3>Dibujando...</h3>
     <div class="div">
         <button class="button" id="dibujar">
             <img src="imagenes/lapiz.png" alt="dibujar" srcset="">
         </button>
-        <button class="button" id="borrar">
+        <button class="button" id="goma">
             <img src="imagenes/goma-de-borrar.png" alt="borrar" srcset="">
         </button>
         <button class="button" id="limpiar">
@@ -21,20 +21,22 @@
         </button>
         
     </div>
-    <canvas id="canvas"></canvas>
-    <form action="../../form-result.php" method="post" enctype="multipart/form-data" target="_blank">
-
-        <p>
-      
-          Sube una imagen:
-      
-          <input type="file" name="imagensubida" accept="image/png, .jpeg, .jpg, image/gif">
-      
-          <input type="submit" value="Enviar datos">
-      
-        </p>
-      
-     </form>
-    <script src="filtros.js"></script>
+    <canvas id="canvasdibujo" width="600" height="500"></canvas>
+    
+    <div>
+        <h3>Aplique los filtros que desee...</h3>
+               
+    </div>
+    <canvas id="canvasimagen"></canvas>
+    <div>
+        <input class="form-control" type="file" id="upload">
+    </div>
+    <div>
+        <button id="filtroNegativo">Negativo</button>
+    </div>
+    
+    
+    
+    <script src="index.js"></script>
 </body>
 </html>
