@@ -270,14 +270,45 @@ document.addEventListener('DOMContentLoaded', () => {
         var constant= 20;
         // recorre uno a uno los pixeles de la imagen y cambia el color 
         for (var i = 0; i < pixels.length; i += 4) {
+
             pixels[i]= constant + pixels[i]; // rojo
             pixels[i + 1] = constant + pixels[i + 1]; // verde
             pixels[i + 2] = constant + pixels[i + 2]; // azul
         }
         ctximagen.putImageData(imgData, 0, 0);
     };
+
+
     //FILTRO BINARIZACION
     //http://cortesfernando.blogspot.com/2014/05/binarizacion-imagen.html
+    let botonBinarizacion= document.getElementById('filtroBinarizacion');
+    botonBinarizacion.addEventListener('click', function(){
+        filtroBinarizacion();
+    })
+
+    function filtroBinarizacion(){
+        //Devuelve un objeto imgData con los datos de todos los píxeles de la imagen
+        var imgData = ctximagen.getImageData(0, 0, canvasimagen.width, canvasimagen.height);
+        var pixels = imgData.data;
+        
+        var constant= 127.5;
+        // recorre uno a uno los pixeles de la imagen y cambia el color 
+        for (var i = 0; i < pixels.length; i++) {
+
+            let valor = (pixels[i*4]+pixels[i*4+1]+pixels[i*4+2])/3;
+            if(valor<=constant){
+                pixels[i* 4]=0;
+                pixels[i* 4+1]=0;
+                pixels[i*4+2]=0;
+            }
+            if (valor>constant){
+                pixels[i*4]=255;
+                pixels[i*4+1]=255;
+                pixels[i*4+2]=255;
+            }
+        }
+        ctximagen.putImageData(imgData, 0, 0);
+    };
 
     //GUARGAR IMAGEN COMO DESCARGA.
     //https://www.etnassoft.com/2016/11/03/manipulacion-de-imagenes-con-javascript-parte-1/
