@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let botondibujar = document.getElementById('dibujar');
     botondibujar.addEventListener('click',()=>{
-        canvasdibujo.addEventListener('mousedown', detenerBorrado);
+        canvasdibujo.addEventListener('mousedown', detenerBorrado);        
         canvasdibujo.addEventListener('mousedown', iniciarDibujo);
         canvasdibujo.addEventListener('mouseup', detenerDibujado);
         canvasdibujo.addEventListener('mousemove', dibujo);
@@ -16,10 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
         canvasdibujo.addEventListener('mousedown', iniciarBorrado);
         canvasdibujo.addEventListener('mouseup', detenerBorrado);
         canvasdibujo.addEventListener('mousemove', borro);
-
     });
-
-   
+  
     let imageData = ctxdibujo.createImageData(canvasdibujo.width,canvasdibujo.height);
     
     const setpixel = (imageData,x,y,r,g,b,a) => {
@@ -127,13 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     });
 
-    //FILTRO NEGATIVO
+    //FILTRO BLANCO Y NEGRO
     //http://w3.unpocodetodo.info/canvas/blancoynegro.php
-    let botonNegativo = document.getElementById('filtroNegativo');
-    botonNegativo.addEventListener('click', function(){
-      filtroNegativo();
+    let botonByN = document.getElementById('filtroByN');
+    botonByN.addEventListener('click', function(){
+      filtroByN();
     });
-    function filtroNegativo() {
+    function filtroByN() {
         var imageData = ctximagen.getImageData(0, 0, canvasimagen.width, canvasimagen.height);
         var pixels = imageData.data;
         var numPixels = imageData.width * imageData.height;  
@@ -151,13 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-    //FILTRO INVERTIR
+    //FILTRO NEGATIVO
     //http://w3.unpocodetodo.info/canvas/negativo.php
-    let botonInvertir = document.getElementById('filtroInvertir');
-    botonInvertir.addEventListener('click', function(){
-        filtroInvertir();
+    let botonNegativo = document.getElementById('filtroNegativo');
+    botonNegativo.addEventListener('click', function(){
+        filtroNegativo();
     });
-    function filtroInvertir(){
+    function filtroNegativo(){
         //Devuelve un objeto imgData con los datos de todos los píxeles de la imagen
         var imgData = ctximagen.getImageData(0, 0, canvasimagen.width, canvasimagen.height);
         var pixels = imgData.data;
@@ -309,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ctximagen.putImageData(imgData, 0, 0);
     };
-
+    
     //GUARGAR IMAGEN COMO DESCARGA.
     //https://www.etnassoft.com/2016/11/03/manipulacion-de-imagenes-con-javascript-parte-1/
     let botonGuardar= document.getElementById('guardarImagen');

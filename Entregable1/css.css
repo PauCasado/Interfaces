@@ -1,14 +1,17 @@
 .button{
-    width: 30px;
-    height: 30px;
+    width: auto;
+    height: auto;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: aquamarine;
+    margin: 3px;    
 }
 canvas{
-    border: solid 3px indianred;
+    border: solid 3px coral;
     margin:10px;
 }
 img{
-    width: 15px;;
-    height: 15px;
+    width: 30px;;
+    height: 30px;
     border-radius: 0%;
 }
 h3{
@@ -18,5 +21,5 @@ h3{
     text-align: center;
     text-transform: capitalize;
     background-color: lightskyblue;
-    
+    border: solid cornflowerblue;
 }
