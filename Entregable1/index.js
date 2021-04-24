@@ -4,19 +4,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let botondibujar = document.getElementById('dibujar');
     botondibujar.addEventListener('click',()=>{
+        canvasdibujo.removeEventListener('mousedown', detenerDibujado);
+        canvasdibujo.removeEventListener('mousedown',iniciarBorrado);
+        canvasdibujo.removeEventListener('mouseup', detenerBorrado);
+        canvasdibujo.removeEventListener('mousemove', borro);
         canvasdibujo.addEventListener('mousedown', detenerBorrado);        
         canvasdibujo.addEventListener('mousedown', iniciarDibujo);
         canvasdibujo.addEventListener('mouseup', detenerDibujado);
         canvasdibujo.addEventListener('mousemove', dibujo);
         
     });
+    
     let botonborrar =document.getElementById('goma');
     botonborrar.addEventListener('click', ()=>{
+        canvasdibujo.removeEventListener('mousedown', detenerBorrado);        
+        canvasdibujo.removeEventListener('mousedown', iniciarDibujo);
+        canvasdibujo.removeEventListener('mouseup', detenerDibujado);
+        canvasdibujo.removeEventListener('mousemove', dibujo);
         canvasdibujo.addEventListener('mousedown', detenerDibujado);
         canvasdibujo.addEventListener('mousedown', iniciarBorrado);
         canvasdibujo.addEventListener('mouseup', detenerBorrado);
         canvasdibujo.addEventListener('mousemove', borro);
     });
+  
   
     let imageData = ctxdibujo.createImageData(canvasdibujo.width,canvasdibujo.height);
     
@@ -49,9 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
     }
     function iniciarDibujo(event){
-        obtenerPosicion(event);
-        dibujar=true;
         
+        dibujar=true;
+        obtenerPosicion(event);
     }
     function detenerDibujado(){
         dibujar=false;
@@ -72,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //BOTON BORRAR   
     function iniciarBorrado(event){
+    
         borrar=true;
         obtenerPosicion(event);
        
