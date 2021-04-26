@@ -114,10 +114,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     //CANVAS CON IMAGEN Y FILTROS
+
+
     var canvasimagen = document.getElementById("canvasimagen"); // Creates a canvas object
     var ctximagen = canvasimagen.getContext("2d");
-
+    let width = canvasimagen.width;
+    let height = canvasimagen.height;
     var miImagen = new Image();//// Creates image object
+    let imagenOriginal;
     //CARGA DE IMAGEN
     let imgInput = document.getElementById('upload');
     imgInput.addEventListener('change', function (e) {
@@ -128,14 +132,16 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onloadend = function (e) {
             miImagen.src = e.target.result; // Assigns converted image to image object
             miImagen.onload = function (ev) {
-                canvasimagen.width = miImagen.width; // Assigns image's width to canvas
-                canvasimagen.height = miImagen.height; // Assigns image's height to canvas
-                ctximagen.drawImage(miImagen, 0, 0); // Draws the image on canvas
+                myDrawImage(miImagen) // Draws the image on canvas
             }
         }
     }
     });
-
+    function myDrawImage(miImagen) {
+        ctximagen.drawImage(miImagen, 0, 0, canvasimagen.width,canvasimagen.height);
+        imagenOriginal = ctximagen.getImageData(0, 0, canvasimagen.width, canvasimagen.height);
+    }
+    
     //FILTRO BLANCO Y NEGRO
     //http://w3.unpocodetodo.info/canvas/blancoynegro.php
     let botonByN = document.getElementById('filtroByN');
@@ -318,7 +324,193 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ctximagen.putImageData(imgData, 0, 0);
     };
+    //FILTRO BLUR - AYUDA CON SOBEL Y VIDEO DE CLASE
     
+    let botonBlur = document.getElementById('filtroBlur');
+    botonBlur.addEventListener('click', filtroBlur);
+
+    function filtroBlur(){
+        let imageOriginal = ctximagen.getImageData(0,0,canvasimagen.width, canvasimagen.height);
+        let imageDataEdit = aplicacionBlur(imageOriginal);
+        ctximagen.putImageData(imageDataEdit, 0, 0);
+
+    }
+    function aplicacionBlur(imagen){
+        let matriz = [
+            [1,1,1],
+            [1,1,1],
+            [1,1,1]
+        ];
+
+        let n=9;
+
+        for (let x=(0+1); x<(width-1); x++){
+            for (let y= (0+1); y<(height-1); y++){
+                let pixel_RGBA_1_SupIzq = getPixel(imagen, x - 1, y - 1); //superior izquirda 1
+                let pixel_RGBA_2_Arriba = getPixel(imagen, x - 1, y); //arriba 2
+                let pixel_RGBA_3_SupDer = getPixel(imagen, x - 1, y + 1); //superior derecha 3
+                let pixel_RGBA_4_Izq = getPixel(imagen, x, y - 1); //izquierda 4
+                let pixel_RGBA_5_Centro = getPixel(imagen, x, y); // pixel a cambiar del medio 5
+                let pixel_RGBA_6_Der = getPixel(imagen, x, y + 1); // derecha 6
+                let pixel_RGBA_7_InfIzq = getPixel(imagen, x + 1, y - 1); // inferior izquierda 7
+                let pixel_RGBA_8_Abajo = getPixel(imagen, x + 1, y); // abajo 8
+                let pixel_RGBA_9_InfDer = getPixel(imagen, x + 1, y + 1); // inferior derecha 9
+
+                let r = Math.floor((
+                    (pixel_RGBA_1_SupIzq[0] * matriz[0][0]) + (pixel_RGBA_2_Arriba[0] * matriz[0][1]) + (pixel_RGBA_3_SupDer[0] * matriz[0][2]) +
+                    (pixel_RGBA_4_Izq[0] * matriz[1][0]) + (pixel_RGBA_5_Centro[0] * matriz[1][1]) + (pixel_RGBA_6_Der[0] * matriz[1][2]) +
+                    (pixel_RGBA_7_InfIzq[0] * matriz[2][0]) + (pixel_RGBA_8_Abajo[0] * matriz[2][1]) + (pixel_RGBA_9_InfDer[0] * matriz[2][2])
+                ) / n);
+                let g = Math.floor((
+                    (pixel_RGBA_1_SupIzq[1] * matriz[0][0]) + (pixel_RGBA_2_Arriba[1] * matriz[0][1]) + (pixel_RGBA_3_SupDer[1] * matriz[0][2]) +
+                    (pixel_RGBA_4_Izq[1] * matriz[1][0]) + (pixel_RGBA_5_Centro[1] * matriz[1][1]) + (pixel_RGBA_6_Der[1] * matriz[1][2]) +
+                    (pixel_RGBA_7_InfIzq[1] * matriz[2][0]) + (pixel_RGBA_8_Abajo[1] * matriz[2][1]) + (pixel_RGBA_9_InfDer[1] * matriz[2][2])
+                ) / n);
+                let b = Math.floor((
+                    (pixel_RGBA_1_SupIzq[2] * matriz[0][0]) + (pixel_RGBA_2_Arriba[2] * matriz[0][1]) + (pixel_RGBA_3_SupDer[2] * matriz[0][2]) +
+                    (pixel_RGBA_4_Izq[2] * matriz[1][0]) + (pixel_RGBA_5_Centro[2] * matriz[1][1]) + (pixel_RGBA_6_Der[2] * matriz[1][2]) +
+                    (pixel_RGBA_7_InfIzq[2] * matriz[2][0]) + (pixel_RGBA_8_Abajo[2] * matriz[2][1]) + (pixel_RGBA_9_InfDer[2] * matriz[2][2])
+                ) / n);
+                let a =255;
+                
+                setPixel(imagen,x,y,r,g,b,a);
+            }
+            
+        }
+        
+        return imagen;
+    }
+    
+    function getPixel(imageData, x, y) {
+        let index = (x + y * imageData.height) * 4;
+        let r = imageData.data[index + 0];
+        let g = imageData.data[index + 1];
+        let b = imageData.data[index + 2];
+        let a = imageData.data[index + 3];
+        return [r, g, b, a];
+    }
+    function setPixel(imageData, x, y, r, g, b, a) {
+        let index = (x + y * imageData.height) * 4;
+        imageData.data[index + 0] = r;
+        imageData.data[index + 1] = g;
+        imageData.data[index + 2] = b;
+        imageData.data[index + 3] = a;
+        
+    }
+
+    //FILTRO SATURATION
+    let botonSaturacion = document.getElementById('filtroSaturacion');
+    botonSaturacion.addEventListener('click', function() {
+        let sat=0.5;
+        filtroSaturacion(sat);
+        
+    });
+
+    function filtroSaturacion(saturacion) {
+        let imagenOriginal = ctximagen.getImageData(0, 0,canvasimagen.width, canvasimagen.height);
+        for (let x = 0; x < canvasimagen.width; x++) {
+            for (let y = 0; y < canvasimagen.height; y++) {
+                let pixelRGBA = getPixel(imagenOriginal, x, y);
+                let hsv = rgbToHsv(pixelRGBA[0], pixelRGBA[1], pixelRGBA[2]);
+                let rgb = HSVtoRGB(hsv[0], (hsv[1] + saturacion), hsv[2]);
+                let a = 255;
+                setPixel(imagenOriginal, x, y, rgb[0], rgb[1], rgb[2], a);
+            }
+        }
+        ctximagen.putImageData(imagenOriginal, 0, 0);
+    };
+    function rgbToHsv(r, g, b) {
+        var h;
+        var s;
+        var v;
+
+        var maxColor = Math.max(r, g, b);
+        var minColor = Math.min(r, g, b);
+        var delta = maxColor - minColor;
+
+        if (delta == 0) {
+            h = 0;
+        } else if (r == maxColor) {
+            h = (6 + (g - b) / delta) % 6;
+        } else if (g == maxColor) {
+            h = 2 + (b - r) / delta;
+        } else if (b == maxColor) {
+            h = 4 + (r - g) / delta;
+        } else {
+            h = 0;
+        }
+
+        h = h / 6;
+
+        if (maxColor != 0) {
+            s = delta / maxColor;
+        } else {
+            s = 0;
+        }
+
+        v = maxColor / 255;
+
+        return [h, s, v];
+    }
+
+    function HSVtoRGB(h, s, v) {
+        var r, g, b, i, f, p, q, t;
+        if (arguments.length === 1) {
+            s = h.s;
+            v = h.v;
+            h = h.h;
+        }
+        i = Math.floor(h * 6);
+        f = h * 6 - i;
+        p = v * (1 - s);
+        q = v * (1 - f * s);
+        t = v * (1 - (1 - f) * s);
+        switch (i % 6) {
+            case 0:
+                r = v;
+                g = t;
+                b = p;
+                break;
+            case 1:
+                r = q;
+                g = v;
+                b = p;
+                break;
+            case 2:
+                r = p;
+                g = v;
+                b = t;
+                break;
+            case 3:
+                r = p;
+                g = q;
+                b = v;
+                break;
+            case 4:
+                r = t;
+                g = p;
+                b = v;
+                break;
+            case 5:
+                r = v;
+                g = p;
+                b = q;
+                break;
+        }
+        return [
+            Math.round(r * 255),
+            Math.round(g * 255),
+            Math.round(b * 255)
+        ];
+    }
+
+    //RESTAURAR IMAGEN
+    let botonRestaurar = document.getElementById('restaurar');
+    botonRestaurar.addEventListener('click', function(){
+        ctximagen.putImageData(imagenOriginal, 0, 0);
+
+    });
+
     //GUARGAR IMAGEN COMO DESCARGA.
     //https://www.etnassoft.com/2016/11/03/manipulacion-de-imagenes-con-javascript-parte-1/
     let botonGuardar= document.getElementById('guardarImagen');
